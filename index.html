@@ -5267,6 +5267,12 @@ window.TNDA_FIREBASE = {
   $("gPwGo").addEventListener("click", tryPw);
   $("gPwIn").addEventListener("keydown", function(e){ if(e.key === "Enter"){ tryPw(e); } });
   $("gPwBack").addEventListener("click", function(){ askPw(false); });
+  // 保底：密碼框出現但沒抓到焦點時，使用者一開始打字就自動切過去
+  document.addEventListener("keydown", function(e){
+    if($("gPw").hidden || document.activeElement === $("gPwIn") || e.ctrlKey || e.metaKey || e.altKey) return;
+    if(e.key && e.key.length === 1){ $("gPwIn").focus({ preventScroll:true }); }
+  }, true);
+  $("gPw").addEventListener("pointerdown", function(e){ if(e.target === $("gPw")) $("gPwIn").focus(); });
   function enter(m, ok){
     if(m === "teacher" && !ok){ askPw(true); return; }
     var g = $("gate"); g.classList.add("out"); setTimeout(function(){ g.hidden = true; }, 360);
