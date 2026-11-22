@@ -5130,11 +5130,15 @@ window.TNDA_FIREBASE = {
     if(!name) return fieldErr($("fName"), "請填名字。");
     if(raw && !url) return fieldErr($("fUrl"), "這不像網址。請從瀏覽器網址列整段複製，例如 www.my-mvp.com 或 https://my-mvp.vercel.app");
     if(rawD && !dataUrl) return fieldErr($("fData"), "資料連結不像網址。請從雲端（Drive、Notion、Dropbox…）複製分享連結。");
-    if(!S.demo && (!S.db || !S.uid)){ $("err").textContent = "還沒連上，請稍等幾秒再交一次。"; return; }
+    if(!S.demo && (!S.db || !S.uid || !S.ready)){ $("err").textContent = "還沒連上，請稍等幾秒再交一次。"; return; }
     S.flying = true;
     try{
       // same name = edit: the existing slip is updated in place (same id, same upload time), so its 序號 never moves
-      var nkey = name.toLowerCase(), prev = slips().find(function(x){ return x.name.trim().toLowerCase() === nkey; });
+      var nkey = name.toLowerCase();
+      if(S.db){ // 送出前重新抓一次最新資料，避免本機清單還沒更新就把同名的人當成新的一份
+        try{ var fresh = await S.db.collection("links").get(); S.docs = fresh.docs.map(function(x){ return { id:x.id, data:x.data() || {} }; }); }catch(_){}
+      }
+      var prev = slips().find(function(x){ return x.name.trim().toLowerCase() === nkey; });
       if(wantPri && !(prev && prev.it.pri) && priCount() >= PRI_MAX){ S.flying = false; $("fPri").checked = false; syncPri(); $("err").textContent = "優先排隊名額 " + PRI_MAX + " 人已滿，這次會用一般順序交出，請取消勾選後再送出。"; return; }
       var uid = prev ? prev.uid : S.uid, d = S.docs.find(function(x){ return x.id === uid; });
       var items = d ? (d.data.items||[]).slice() : [];
