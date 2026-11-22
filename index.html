@@ -5256,7 +5256,7 @@ window.TNDA_FIREBASE = {
     if(!(window.crypto && crypto.subtle && window.TextEncoder)) return sha256js(t);
     try{ var b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t)); return Array.prototype.map.call(new Uint8Array(b), function(x){ return ("0" + x.toString(16)).slice(-2); }).join(""); }catch(e){ return sha256js(t); }
   }
-  function askPw(on){ $("gPw").hidden = !on; $("gateErr").textContent = ""; if(on){ $("gPwIn").value = ""; setTimeout(function(){ $("gPwIn").focus(); }, 30); } else $("gate").focus({ preventScroll:true }); }
+  function askPw(on){ $("gPw").hidden = !on; $("gateErr").textContent = ""; if(on){ $("gPwIn").value = ""; [0, 40, 150, 350, 700].forEach(function(t){ setTimeout(function(){ if(!$("gPw").hidden && document.activeElement !== $("gPwIn")) $("gPwIn").focus({ preventScroll:true }); }, t); }); } else $("gate").focus({ preventScroll:true }); }
   async function tryPw(e){
     if(e && e.preventDefault) e.preventDefault();
     var v = $("gPwIn").value.trim().replace(/[\uFF01-\uFF5E]/g, function(ch){ return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0); });
