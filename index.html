@@ -4962,7 +4962,7 @@ window.TNDA_FIREBASE = {
     else if(!all.length) say("還沒有作品。");
     else if(!left) say("都看完了。");
     else { say("點一下投票箱，取出 MVP。"); var nt = $("sayNote"); if(nt){ nt.textContent = "勾選優先排隊的先取出。"; nt.hidden = false; } }
-    setPills([]);
+    setPills(done > 0 ? [ pill("重新開始抽", askReset, "quiet") ] : []);
   }
   function teacherShowing(s){
     var n = orderOf(s), left = leftCount();
@@ -5038,9 +5038,9 @@ window.TNDA_FIREBASE = {
     S.busy = false; return true;
   }
   function askReset(){
-    say("全部放回箱子？");
+    say("從頭開始抽？已抽過的紀錄會清掉，所有人都回到箱子。");
     setPills([
-      pill("全部放回", async function(){
+      pill("確定，重新開始", async function(){
         var out = slips().filter(function(s){ return s.pickedAt; });
         if(await setPicked(out, false)){ if(G) await flyIn(); showFlat(null); refreshPeek(); teacherIdle(); }
       }),
