@@ -5003,7 +5003,7 @@ window.TNDA_FIREBASE = {
     if(S.flying || S.busy || S.current ) return;   // put the current slip away before drawing again
     var pool = queue();
     if(!pool.length){ teacherIdle(); return; }
-    var pick = pool[0];   // priority queue first, then oldest upload
+    var pick = pool[0].it.pri ? pool[0] : pool[Math.floor(Math.random() * pool.length)];   // 優先名單依序取出；沒有優先的了，其餘隨機抽
     await show(pick);
   }
   async function show(s){
